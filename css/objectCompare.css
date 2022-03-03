@@ -1,0 +1,32 @@
+._objectcompare_ table{
+    border-collapse: collapse;
+}
+
+._objectcompare_ .results th{
+    width: 200px;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+}
+
+._objectcompare_ .results tr:nth-child(2n){
+    background-color: rgb(207, 207, 207);
+}
+
+._objectcompare_ .results table{
+    border: 1px solid black;
+}
+
+._objectcompare_ .results thead{
+    border: 1px solid black;
+}
+
+._objectcompare_ .results td{
+    padding: 5px;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+}
+
+.object_textarea{
+    width:500px;
+    height:300px;
+}

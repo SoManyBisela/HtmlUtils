@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyUtilsPage</title>
+    <script src="js/utils.js"></script>
+    <script src="js/html.js"></script>
+    <script src="js/paging.js"></script>
+    <script src="js/writer.js"></script>
+    <script src="js/popups.js"></script>
+    <script>
+        //loads writer page
+        paging.addPage("Writer", root => {
+            writer.setTargetElement(root);
+        });
+
+        const write = writer.write;
+        write();
+    </script>
+    <script src="js/fileloader.js"></script>
+    <script>
+        //loads fileloader page
+        (() => {
+            fileloader.loadedFiles = [];
+            paging.addPage("FileLoader", root => {
+                let infile = html.create("input", {
+                    attributes: {
+                        type: "file"
+                    }
+                });
+                root.appendChild(infile);
+                fileloader.load = async function () {
+                    return await fileloader.loadFile(infile.files[0]);
+                };
+
+                async function _loadCurrent() {
+                    let file = infile.files[0];
+                    if (!file) return;
+                    fileloader.lastLoaded = {
+                        name: file.name,
+                        content: await fileloader.loadFile(file)
+                    };
+                    fileloader.loadedFiles.push(fileloader.lastLoaded);
+                    fileloader.lastLoaded = fileloader.lastLoaded.content;
+                }
+                root.appendChild(html.create("button", {
+                    textContent: "Load",
+                    events: {
+                        click: _loadCurrent
+                    }
+                }))
+                root.appendChild(html.create("button", {
+                    textContent: "Run as js",
+                    events: {
+                        click: async () => {
+                            await _loadCurrent();
+                            eval(fileloader.lastLoaded)
+                        }
+                    }
+                }))
+            });
+        })();
+
+    </script>
+    <script src="js/objectcompare.js"></script>
+    <script>
+        paging.addPage("ObjectCompare", objectcompare.renderToElement);
+    </script>
+    <script>
+        function gorge(index) {
+            eval(fileloader.loadedFiles[index].content);
+        }
+    </script>
+    <script src="js/logutils.js"></script>
+    <script src="js/loghelper.js"></script>
+    <script>
+        paging.addPage("Loghelper", loghelper.renderToElement);
+    </script>
+    <link rel="stylesheet" href="css/paging.css">
+    <link rel="stylesheet" href="css/objectCompare.css">
+    <link rel="stylesheet" href="css/popup.css">
+    <link rel="stylesheet" href="css/loghelper.css">
+</head>
+
+<body>
+</body>
+
+</html>

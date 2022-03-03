@@ -1,0 +1,35 @@
+._popup_main_{
+    position: absolute;
+    top: 35px;
+    right: 20px;
+    left: 20px;
+    bottom: 20px;
+}
+
+._close_popup_button_{
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    border: none;
+    font-weight: 700;
+    background-color: rgba(0,0,0,0);
+}
+
+._popup_background_{
+    background-color: rgba(0,0,0,0.2);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}   
+
+._popup_container_{
+    background-color: white;
+    position: absolute;
+    top: 100px;
+    bottom: 100px;
+    left: 100px;
+    right: 100px;
+    border-radius: 30px;
+}

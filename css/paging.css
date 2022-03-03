@@ -1,0 +1,80 @@
+body {
+    font-family: sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+._container_ {
+    top: 100px;
+    bottom: 1%;
+    left: 1%;
+    right: 1%;
+    position: absolute;
+    border: 1px solid #ccc;
+}
+
+._paging_ {
+    vertical-align: bottom;
+    position: absolute;
+    transform: translate(0, -100%);
+    height: 80px;
+    top: 100px;
+    left: 1%;
+    right: 1%;
+    overflow:auto;
+}
+
+._pseudocontainer_::-webkit-scrollbar,
+._paging_::-webkit-scrollbar {
+    width: 6px;
+}
+
+._pseudocontainer_::-webkit-scrollbar-track,
+._paging_::-webkit-scrollbar-track {
+    margin: 5px 0;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    
+    border-radius: 10px;
+}
+
+._pseudocontainer_::-webkit-scrollbar-thumb,
+._paging_::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #333;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+._page_ {
+    text-transform: capitalize;
+    text-align: center;
+    line-height: 30px;
+    margin: 5px;
+    border-radius: 10px;
+    height: 30px;
+    display: flex;
+    padding: 0 10px;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    display: inline-block;
+    cursor: pointer;
+    border: none;
+    background-color: #bbb;
+    font-weight: bold;
+}
+
+._page_:hover {
+    background-color: #ddd;
+}
+
+._pseudocontainer_{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+}

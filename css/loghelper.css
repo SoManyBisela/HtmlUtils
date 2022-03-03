@@ -1,0 +1,22 @@
+._logline_{
+    margin-top: 5px;
+}
+
+._logline_[jsonparsed=false]{
+    color: red;
+}
+
+._logdiv_{
+    overflow: auto;
+    height: 100%;
+    padding: 10px
+}
+
+._loghelper-container_{
+    height: 100%;
+    overflow: hidden;
+}
+
+._controls-container_{
+    padding: 10px;
+}
