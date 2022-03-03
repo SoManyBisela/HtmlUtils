@@ -1,12 +1,12 @@
-class PopupContainer{
-    constructor(onCloseClick){
-        this.titleElement = html.create("div", {
+class PopupContainer {
+    constructor(onCloseClick) {
+        this.titleContainer = html.create("div", {
             class: "_popup_container_title_"
         })
         this.element = html.create("div", {
             class: "_popup_container_",
             elementContentList: [
-                this.titleElement,
+                this.titleContainer,
                 html.create("button", {
                     textContent: "X",
                     events: {
@@ -23,55 +23,85 @@ class PopupContainer{
         })
     }
 
-    show(popup, title){
+    show(popup, titleElement) {
         this.clear();
         this.content = popup;
         this.element.appendChild(popup);
-        this.titleElement.innerText = title;
+        this.titleContainer.innerHTML = "";
+        this.titleContainer.appendChild(titleElement);
     }
 
-    clear(){
-        if(this.content){
+    clear() {
+        if (this.content) {
             this.content.remove();
         }
     }
 }
 
-class PopupList{
+class PopupList {
     constructor(container) {
         this.container = container;
         this.arr = [];
     }
 
-    clear(){
+    clear() {
         this.container.clear();
         this.arr = [];
     }
 
-    _removeShown(){
-        if(this.shown)
-            this.shown.element.remove();
+    push(el, title) {
+        this.arr.push({ el, title });
+        this._showLast();
     }
 
-    push(el, title){
-        this.arr.push({el, title});
-        this.container.show(el, title);
-    }
-
-    pop(){
+    pop() {
         this.arr.pop();
+        this._showLast();
+        return this.arr.length <= 0;
+    }
+
+    _showLast() {
         let arlen = this.arr.length;
-        if(arlen > 0){
+        if (arlen > 0) {
             let el = this.arr[this.arr.length - 1];
-            this.container.show(el.el, el.title);
-            return false;
-        }else{
+            this.container.show(el.el, this._buildTitle());
+        } else {
             this.container.clear();
-            return true;
         }
     }
+
+    _buildTitle() {
+        let titles = this.arr
+            .map(a => a.title)
+            .flatMap((title, index) =>
+                [
+                    html.create("span", {
+                        textContent: ">"
+                    }),
+                    html.create("span", {
+                        class: "_popup_clickable-link_",
+                        textContent: title,
+                        events: {
+                            click: () => this.backTo(index)
+                        }
+                    })
+                ]
+            ).splice(1);
+
+        return html.create("div",
+            {
+                class: "_popup_title_",
+                elementContentList: titles
+            }
+        )
+    }
+
+    backTo(index) {
+        this.arr.splice(index + 1);
+        this._showLast();
+    }
 }
-const popups = function(){
+const popups = function () {
     let popup_container = new PopupContainer(_closePopup);
     let popups = new PopupList(popup_container);
     let popup_bg = html.create("div", {
@@ -85,29 +115,29 @@ const popups = function(){
         }
     });
 
-    function _hidePopupBg(){
+    function _hidePopupBg() {
         popup_bg.hidden = true;
     }
 
-    function _showPopupBg(){
+    function _showPopupBg() {
         popup_bg.hidden = false;
     }
 
-    function _closePopup(){
-        if(popups.pop()) _hidePopupBg();
+    function _closePopup() {
+        if (popups.pop()) _hidePopupBg();
     }
-    
+
     _hidePopupBg();
     utils.onWindowLoad(() => {
         document.body.appendChild(popup_bg);
     });
 
-    function create(callback, title){
+    function create(callback, title) {
         _createPopupMain(callback, title);
         _showPopupBg();
     }
 
-    function _createPopupMain(callback, title){
+    function _createPopupMain(callback, title) {
         let pm = html.create("div", {
             class: "_popup_main_"
         });
@@ -115,5 +145,5 @@ const popups = function(){
         popups.push(pm, title);
     }
 
-    return {create};    
+    return { create };
 }();
