@@ -98,21 +98,28 @@ const html = function(){
                 elementContentList: rows
             })
         });
-        let tdClicked = options.tdClicked ?? ((key, value) => {});
-        let thClicked = options.thClicked ?? ((key, value) => {});
+        let tdClicked = options.tdClicked ?? ((self, key, value) => {});
+        let thClicked = options.thClicked ?? ((self, key, value) => {});
 
-            
-        let keys = Object.keys(ob);
-        let ths = keys.map(thTemplate);
-        let tds = keys.map(a => ob[a]).map(tdTemplate);
-        let rows = [];
+        let verticalRows = Object.keys(ob).map(k => {
+            let v = ob[k];
+            let td = tdTemplate(v);
+            let th = thTemplate(k);
+            td.addEventListener("click", () => tdClicked(td, k, v));
+            th.addEventListener("click", () => thClicked(th, k, v));
+            return [th, td];
+        });
+        let rows;
         if(vertical){
-            for(let idx = 0; idx < keys.length; idx++){
-                rows.push(trTemplate([ths[idx], tds[idx]]));
-            }
+            rows = verticalRows.map(trTemplate);
         }else{
-            rows.push(trTemplate(ths));
-            rows.push(trTemplate(tds));
+            let ths = [];
+            let tds = [];
+            rows.forEach(a => {
+                ths.push(a[0]);
+                tds.push(a[1]);
+            });
+            rows = [ths.map(trTemplate), tds.map(trTemplate)];
         }
         return tableTemplate(rows);
     }

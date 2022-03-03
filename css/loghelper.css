@@ -20,3 +20,9 @@
 ._controls-container_{
     padding: 10px;
 }
+
+._loghelper_detail_popup_{
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}

@@ -15,7 +15,7 @@ const loghelper = function () {
                     textContent: "Carica log",
                     events: {
                         click: () => {
-                            if(select.value != -1){
+                            if (select.value != -1) {
                                 filecontent = fileloader.loadedFiles[select.value].content;
                                 loadedLogs = logutils.parseFile(filecontent);
                                 _renderLogs(logDiv);
@@ -37,14 +37,14 @@ const loghelper = function () {
         };
     }
 
-    function _renderLogs(targetDiv){
+    function _renderLogs(targetDiv) {
         targetDiv.innerHTML = "";
         loadedLogs.lines
             .map(_createLogLine)
             .forEach(a => targetDiv.appendChild(a));
     }
 
-    function _createLogLine(log, index){
+    function _createLogLine(log, index) {
         return html.create("div", {
             class: "_logline_",
             elementContentList: [
@@ -62,21 +62,40 @@ const loghelper = function () {
         });
     }
 
-    function _logLineClicked(index){
+    function _logLineClicked(index) {
         let log = loadedLogs.lines[index];
-        popups.create(
-            popupContainer => {
-                popupContainer.appendChild(html.obejctTable(log, {vertical: true}));
-            },
-            "Linea di log"
-        )
-        console.log(loadedLogs.lines[index]);
+        popups.create(_createDetailPopup(log), `Linea ${index}`);
+    }
+
+    function _createDetailPopup(log) {
+        return (popupContainer) => 
+        popupContainer.appendChild(
+            html.create("div", {
+                class: "_loghelper_detail_popup_",
+                elementContent: html.obejctTable(log, {
+                    vertical: true,
+                    tdClicked: (self, k, v) => {
+                        popups.create(_createFieldDetailPopup(v), k);
+                    },
+                })
+            })
+        );
+    }
+
+    function _createFieldDetailPopup(value){
+        return (popupContainer) => 
+        popupContainer.appendChild(
+            html.create("div", {
+                class: "_loghelper_detail_popup_",
+                textContent: value
+            })
+        );
     }
 
     function _filenameToOption(filename, index) {
         return html.createOption(filename, index);
     }
-    
+
     function _createOptions(files) {
         let opts = [
             html.createOption("Seleziona file da caricare", "-1")
@@ -91,17 +110,17 @@ const loghelper = function () {
 
     function _upateSelect(select) {
         select.innerHTML = "";
-            _createOptions(
-                fileloader.loadedFiles.map(a => a.name)
-            ).forEach(el => select.appendChild(el));
+        _createOptions(
+            fileloader.loadedFiles.map(a => a.name)
+        ).forEach(el => select.appendChild(el));
     }
 
-    function getLoadedLogs(){
+    function getLoadedLogs() {
         return loadedLogs;
     }
-    
+
     return {
         renderToElement,
-        getLoadedLogs 
+        getLoadedLogs
     };
 }()
