@@ -1,49 +1,79 @@
 const fileloader = function() {
     let loadedFiles = [];
     function renderToElement(root){
-        let infile = html.create("input", {
+
+        let fileinput = html.create("input", {
             attributes: {
                 type: "file"
             }
         });
-        root.appendChild(infile);
-        fileloader.load = async function () {
-            return await utils.loadFile(infile.files[0]);
-        };
+
+        let select = html.create("select");
+
+        let div = html.create("div", {
+            class : "_fileloader_container_",
+            elementContentList: [
+                html.create("div", {
+                    class: "_fileloader_fileinput-container_",
+                    elementContentList: [
+                        fileinput,
+                        html.create("button", {
+                            textContent: "Load",
+                            events: {
+                                click:  async () => {
+                                    await _loadCurrent();
+                                    _upateSelect(select);
+                                }
+                            }
+                        })
+                    ]
+                }),
+                html.create("div", {
+                    class: "_fileloader_loadedfile-selector_",
+                    elementContentList: [
+                        select,
+                        html.create("button", {
+                            textContent: "Run as js",
+                            events: {
+                                click: () => {
+                                    let selectedFile = _getSelectedLoadedFile(select);
+                                    if(!selectedFile) return;
+                                    eval(selectedFile.content)
+                                }
+                            }
+                        }),
+                        html.create("button", {
+                            textContent: "Load as logfile",
+                            events: {
+                                click: () => {
+                                    let file = _getSelectedLoadedFile(select);
+                                    if(!file) return;
+                                    loghelper.createPageFromLogFile(file.content, file.name);
+                                }
+                            }
+                        })
+
+                    ]
+                })
+            ]
+        });
+
+        function _getSelectedLoadedFile(select){
+            if(select.value == -1) return null;
+            return loadedFiles[select.value];
+        }
 
         async function _loadCurrent() {
-            let file = infile.files[0];
+            let file = fileinput.files[0];
             if (!file) return;
             loadedFiles.push({
                 name: file.name,
                 content: await utils.loadFile(file)
             });
         }
-        root.appendChild(html.create("button", {
-            textContent: "Load",
-            events: {
-                click: _loadCurrent
-            }
-        }));
-        root.appendChild(html.create("button", {
-            textContent: "Run as js",
-            events: {
-                click: async () => {
-                    await _loadCurrent();
-                    eval(getLastLoadedFile().content)
-                }
-            }
-        }));
-        root.appendChild(html.create("button", {
-            textContent: "Load as logfile",
-            events: {
-                click: async () => {
-                    await _loadCurrent();
-                    let file = getLastLoadedFile();
-                    loghelper.createPageFromLogFile(file.content, file.name);
-                }
-            }
-        }))
+        _upateSelect(select);
+
+        root.appendChild(div);
     }
 
     function getLoadedFiles(){
@@ -53,6 +83,30 @@ const fileloader = function() {
     function getLastLoadedFile(){
         return loadedFiles[loadedFiles.length - 1];
     }
+
+    function _upateSelect(select) {
+        select.innerHTML = "";
+        _createOptions(
+            loadedFiles.map(a => a.name)
+        ).forEach(el => select.appendChild(el));
+    }
+
+    function _filenameToOption(filename, index) {
+        return html.createOption(filename, index);
+    }
+
+    function _createOptions(files) {
+        let opts = [
+            html.createOption("Seleziona file", "-1")
+        ];
+
+        files.map(_filenameToOption).forEach(e => {
+            opts.push(e);
+        });
+
+        return opts;
+    }
+
 
     return  {
         renderToElement,

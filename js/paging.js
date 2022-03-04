@@ -29,6 +29,9 @@ const paging = function () {
     function _removePage(page){
         pages = pages.filter(a => a !== page);
         page.headerButton.remove();
+        if(activePage == page){
+            swapTo(pages[0])
+        }
     }
 
     function swapTo(page) {
