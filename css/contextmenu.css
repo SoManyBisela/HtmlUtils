@@ -1,0 +1,28 @@
+._contextmenu_container_{
+    position: absolute;
+    background-color: white;
+    border-radius: 4px;
+    padding: 4px;
+    overflow: hidden;
+    -webkit-box-shadow: 2px 2px 9px 4px rgb(0 0 0 / 50%);
+    box-shadow: 2px 2px 9px 4px rgb(0 0 0 / 50%);
+}
+
+._contextmenu_background_{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+._contextmenu_option_{
+    border-radius: 4px;
+    padding: 2px 8px;
+    text-transform: capitalize;
+    margin: 1px;
+}
+
+._contextmenu_option_:hover{
+    background-color: lightgray;
+}

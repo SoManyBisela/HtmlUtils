@@ -98,15 +98,19 @@ const html = function(){
                 elementContentList: rows
             })
         });
-        let tdClicked = options.tdClicked ?? ((self, key, value) => {});
-        let thClicked = options.thClicked ?? ((self, key, value) => {});
+        let tdLeftClick = options.tdLeftClick ?? ((self, evt, key, value) => {});
+        let thLeftClick = options.thLeftClick ?? ((self, evt, key, value) => {});
+        let tdRightClick = options.tdRightClick ?? ((self, evt, key, value) => {});
+        let thRightClick = options.thRightClick ?? ((self, evt, key, value) => {});
 
         let verticalRows = Object.keys(ob).map(k => {
             let v = ob[k];
             let td = tdTemplate(v);
             let th = thTemplate(k);
-            td.addEventListener("click", () => tdClicked(td, k, v));
-            th.addEventListener("click", () => thClicked(th, k, v));
+            td.addEventListener("click", (evt) => tdLeftClick(td, evt, k, v));
+            th.addEventListener("click", (evt) => thLeftClick(th, evt, k, v));
+            td.addEventListener("contextmenu", (evt) => tdRightClick(td, evt, k, v));
+            th.addEventListener("contextmenu", (evt) => thRightClick(th, evt, k, v));
             return [th, td];
         });
         let rows;

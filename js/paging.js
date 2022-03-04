@@ -4,21 +4,31 @@ const paging = function () {
     let pages = [];
     let activePage;
 
-    function createPage(pageTitle) {
+    function _createPage(pageTitle, removable = false) {
         let page = {
             pageTitle,
             headerButton: undefined,
             pseudoContainer: html.create("div", { class: "_pseudocontainer_" }),
-            onload: undefined
+            onload: undefined //function called when the page is opened
         };
         page.headerButton = html.create("div", {
-            class: "_page_",
+            class: "_page_" + (removable == true ? " removable": ""),
             events: {
-                onclick: () => swapTo(page)
+                onclick: () => swapTo(page),
+                contextmenu: (self, evt) => {
+                    if(!removable) return;
+                    evt.preventDefault();
+                    contextmenu.createOn(evt, [{text: "Close", callback: () => _removePage(page)}])
+                }
             },
             textContent: pageTitle
         });
         return page;
+    }
+
+    function _removePage(page){
+        pages = pages.filter(a => a !== page);
+        page.headerButton.remove();
     }
 
     function swapTo(page) {
@@ -32,8 +42,8 @@ const paging = function () {
         
     }
 
-    function addPage(name, callback) {
-        let page = createPage(name, onload);
+    function addPage(name, callback, removable = false) {
+        let page = _createPage(name, removable);
         page.onload = callback(page.pseudoContainer);
         pages.push(page);
         header.appendChild(page.headerButton);

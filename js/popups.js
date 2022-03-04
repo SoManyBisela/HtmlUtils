@@ -18,7 +18,7 @@ const popups = function () {
                 ],
                 events: {
                     click: (self, evt) => {
-                        evt.stopPropagation();
+                        evt._popup_clicked_ = true;
                     }
                 }
             })
@@ -108,7 +108,8 @@ const popups = function () {
         class: "_popup_background_",
         elementContent: popup_container.element,
         events: {
-            click: () => {
+            click: (_, evt) => {
+                if(evt._popup_clicked_) return;
                 popups.clear();
                 _hidePopupBg();
             }
@@ -130,7 +131,7 @@ const popups = function () {
     _hidePopupBg();
     utils.onWindowLoad(() => {
         document.body.appendChild(popup_bg);
-    });
+    }, 15);
 
     function create(callback, title) {
         _createPopupMain(callback, title);

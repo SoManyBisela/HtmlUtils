@@ -54,7 +54,12 @@ const loghelper = function () {
                 html.create("hr")
             ],
             events: {
-                click: () => (_logLineClicked(index))
+                aclick: () => (_showDetailPopup(index)),
+                contextmenu: (_, evt) => {
+                    evt.preventDefault();
+                    contextmenu.createOn(evt, _createLogLineContextMenu(index));
+
+                }
             },
             attributes: {
                 jsonparsed: log._jsonParsed
@@ -62,24 +67,42 @@ const loghelper = function () {
         });
     }
 
-    function _logLineClicked(index) {
+    function _showDetailPopup(index) {
         let log = loadedLogs.lines[index];
-        popups.create(_createDetailPopup(log), `Linea ${index}`);
+        popups.create(_createDetailPopupCallback(log), `Linea ${index}`);
     }
 
-    function _createDetailPopup(log) {
+    function _createDetailPopupCallback(log) {
         return (popupContainer) => 
         popupContainer.appendChild(
             html.create("div", {
                 class: "_loghelper_detail_popup_",
                 elementContent: html.obejctTable(log, {
                     vertical: true,
-                    tdClicked: (self, k, v) => {
+                    tdLeftClick: (_1, _2, k, v) => {
                         popups.create(_createFieldDetailPopup(v), k);
                     },
+                    thRightClick: (_, evt, k, v) => {
+                        evt.preventDefault();
+                        contextmenu.createOn(evt, _createThContextMenu(k, v))
+                    }
                 })
             })
         );
+    }
+
+    function _createLogLineContextMenu(index){
+        return [
+            {text: "Mostra dettagli", callback: () => _showDetailPopup(index)}
+        ]
+    }
+
+    function _createThContextMenu(k, v){
+        return [
+            {text: "filterByThis", callback: () => {
+                console.log(loadedLogs.lines.filter(a => a[k] == v));
+            }}
+        ]
     }
 
     function _createFieldDetailPopup(value){

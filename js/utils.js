@@ -19,12 +19,11 @@ const utils = function(){
         };
     }());
 
-    function onWindowLoad(callback){
-        let a = window.onload;
-        window.onload = (...args) => {
-            if(a && a instanceof Function) a(...args);
-            callback(...args);
-        };
+    let windowLoadCallbacks = []
+
+    function onWindowLoad(callback, priority = 10){
+        if(!windowLoadCallbacks[priority])windowLoadCallbacks[priority] = [];
+        windowLoadCallbacks[priority].push(callback);
     }
 
     const parseXml = function(){
@@ -33,6 +32,17 @@ const utils = function(){
             return prs.parseFromString(xml, "text/xml");
         }
     }()
+    
+    let oldOnload = window.onload;
+    window.onload = (...args) => {
+        if(oldOnload && oldOnload instanceof Function) oldOnload(...args);
+        for(callbacks of windowLoadCallbacks){
+            if(callbacks)
+                for(callback of callbacks){
+                    callback(...args);
+                }
+        }
+    }
 
 
     return {
