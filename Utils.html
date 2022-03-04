@@ -26,59 +26,15 @@
         const write = writer.write;
         write();
     </script>
+    <script src="js/logutils.js"></script>
+    <script src="js/loghelper.js"></script>
     <script src="js/fileloader.js"></script>
     <script>
-        //loads fileloader page
-        (() => {
-            fileloader.loadedFiles = [];
-            paging.addPage("FileLoader", root => {
-                let infile = html.create("input", {
-                    attributes: {
-                        type: "file"
-                    }
-                });
-                root.appendChild(infile);
-                fileloader.load = async function () {
-                    return await fileloader.loadFile(infile.files[0]);
-                };
-
-                async function _loadCurrent() {
-                    let file = infile.files[0];
-                    if (!file) return;
-                    fileloader.lastLoaded = {
-                        name: file.name,
-                        content: await fileloader.loadFile(file)
-                    };
-                    fileloader.loadedFiles.push(fileloader.lastLoaded);
-                    fileloader.lastLoaded = fileloader.lastLoaded.content;
-                }
-                root.appendChild(html.create("button", {
-                    textContent: "Load",
-                    events: {
-                        click: _loadCurrent
-                    }
-                }))
-                root.appendChild(html.create("button", {
-                    textContent: "Run as js",
-                    events: {
-                        click: async () => {
-                            await _loadCurrent();
-                            eval(fileloader.lastLoaded)
-                        }
-                    }
-                }))
-            });
-        })();
-
+        paging.addPage("FileLoader", fileloader.renderToElement);
     </script>
     <script src="js/objectcompare.js"></script>
     <script>
         paging.addPage("ObjectCompare", objectcompare.renderToElement);
-    </script>
-    <script src="js/logutils.js"></script>
-    <script src="js/loghelper.js"></script>
-    <script>
-        paging.addPage("Loghelper", loghelper.renderToElement);
     </script>
     <link rel="stylesheet" href="css/paging.css">
     <link rel="stylesheet" href="css/objectCompare.css">
