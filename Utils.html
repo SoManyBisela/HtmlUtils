@@ -6,36 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyUtilsPage</title>
-    <script src="js/utils.js"></script>
-    <script>
-        utils.onWindowLoad(() => {
-            document.body.addEventListener("contextmenu", (evt) => evt.preventDefault());
-        });
-    </script>
-    <script src="js/html.js"></script>
-    <script src="js/popups.js"></script>
-    <script src="js/contextmenu.js"></script>
-    <script src="js/paging.js"></script>
-    <script src="js/writer.js"></script>
-    <script>
-        //loads writer page
-        paging.addPage("Writer", root => {
-            writer.setTargetElement(root);
-        });
-
-        const write = writer.write;
-        write();
-    </script>
-    <script src="js/logutils.js"></script>
-    <script src="js/loghelper.js"></script>
-    <script src="js/fileloader.js"></script>
-    <script>
-        paging.addPage("FileLoader", fileloader.renderToElement);
-    </script>
-    <script src="js/objectcompare.js"></script>
-    <script>
-        paging.addPage("ObjectCompare", objectcompare.renderToElement);
-    </script>
+    <script src="index.bundle.js"></script>
     <link rel="stylesheet" href="css/paging.css">
     <link rel="stylesheet" href="css/objectCompare.css">
     <link rel="stylesheet" href="css/popup.css">
